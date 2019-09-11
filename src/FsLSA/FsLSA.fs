@@ -1,5 +1,5 @@
 
-module LSA
+module FsLSA
 
 // type Functor = Functor with
 //     static member inline (?<-) (Functor, f, x) = Seq.map f x
@@ -8,6 +8,25 @@ module LSA
 //     // works also for external types
 //     static member inline (?<-) (Functor, f, x:int) = f x
 // let inline map f x = ((?<-) Functor) f x
+
+type ToList = ToList with
+    static member inline (?<-) (ToList, x) = Seq.toList x
+    static member inline (?<-) (ToList, x) = x
+    static member inline (?<-) (ToList, x) = Array.toList x
+let inline toList x = ((?<-) ToList) x
+
+type ToArray = ToArray with
+    static member inline (?<-) (ToArray, x) = Seq.toArray x
+    static member inline (?<-) (ToArray, x) = List.toArray x
+    static member inline (?<-) (ToArray, x) = x
+let inline toArray x = ((?<-) ToArray) x
+
+type ToSeq = ToSeq with
+    static member inline (?<-) (ToSeq, x) = x
+    static member inline (?<-) (ToSeq, x) = List.toSeq x
+    static member inline (?<-) (ToSeq, x) = Array.toSeq x
+let inline toSeq x = ((?<-) ToSeq) x
+
 
 // auto-generated from here
 
@@ -624,27 +643,3 @@ type Zip3 = Zip3 with
     static member inline (?<-) (Zip3, x1, x2, x3) = List.zip3 x1 x2 x3
     static member inline (?<-) (Zip3, x1, x2, x3) = Array.zip3 x1 x2 x3
 let inline zip3 x1 x2 x3 = ((?<-) Zip3) x1 x2 x3
-
-
-
-// module private Test =
-
-//     let aList = [ 1;2;3 ]
-//     let anArray = [| 1;2;3 |]
-//     let aSeq = seq { yield 1; yield 2; yield 3 }
-
-//     map ((+) 1) aList
-//     map ((+) 1) anArray 
-//     map ((+) 1) aSeq 
-//     map ((+) 1) 1
-
-//     reduce (+) aList
-//     reduce (+) anArray
-//     reduce (+) aSeq
-
-//     (*
-//     List.collect
-//     List.append
-//     List.choose
-//     *)
-
