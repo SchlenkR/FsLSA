@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageId>SchlenkR.FsLSA</PackageId>
+    <Description>An F# polymorphic, unqualified-accessible set of functions for List, Seq, and Array.</Description>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Authors>Ronald Schlenker</Authors>
+    <Version>0.1.0</Version>
+    <Company />
+    <Copyright>Copyright 2019 Ronald Schlenker</Copyright>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/ronaldschlenker/FsLSA/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/ronaldschlenker/FsLSA</PackageProjectUrl>
+    <PackageIconUrl></PackageIconUrl>
+    <PackageReleaseNotes>
+    </PackageReleaseNotes>
+    <RepositoryUrl>https://github.com/ronaldschlenker/FsLSA.git</RepositoryUrl>
+    <PackageTags>F# FSharp</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="FsLSA.fs" />
+  </ItemGroup>
+
+  <Import Project="..\..\.paket\Paket.Restore.targets" />
+
+</Project>
