@@ -58,8 +58,9 @@ Target.create "Publish" (fun _ ->
     !! ".pack/*.nupkg"
     |> Seq.iter (fun p ->
         Trace.tracefn "------ pushing: %s" p
-        Shell.Exec ("dotnet", sprintf "nuget push %s -k %s -s %s" p nugetApiKey Properties.nugetServer)
-        |> assertSuccess
+        let args = sprintf "nuget push %s -k %s -s %s" p nugetApiKey Properties.nugetServer
+        printfn "exec: dotnet %s" args
+        Shell.Exec ("dotnet", args) |> assertSuccess
     )
 
     // TODO: git tag + release

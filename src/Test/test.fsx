@@ -3,25 +3,13 @@
 open FsLSA
 
 let add1 = (+) 1
+let isEven x = x % 2 = 0
 
-[ 1; 2; 3 ]
-|> map add1
-|> reduce (+)
+// it's still int list
+[ 1..5 ] |> map add1 |> filter isEven
 
-[| 1; 2; 3 |]
-|> map add1
-|> reduce (+)
+// it's still int array
+[| 1..5 |] |> map add1 |> filter isEven
 
-seq { yield 1; yield 2; yield 3 }
-|> map add1
-|> reduce (+)
-
-(* TODO:
-collect
-append
-choose
-*)
-
-[| 1; 2; 3 |]
-|> Array.map ( (+) 1)
-|> Array.reduce (+)
+// it's still int seq
+seq { 1..5 } |> map add1 |> filter isEven
