@@ -1,5 +1,5 @@
 
-#r "../FsLSA/bin/Release/netstandard2.0/FsLSA.dll"
+#r "../FsLSA/bin/Debug/netstandard2.0/FsLSA.dll"
 open FsLSA
 
 let add1 = (+) 1
