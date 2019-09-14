@@ -19,6 +19,11 @@ open Fake.Core.TargetOperators
 
 let assertSuccess i = if i <> 0 then failwith "Shell execute was not successful." else ()
 
+let args = Target.getArguments() |> Option.defaultValue [||]
+
+let publish = args |> Array.contains "--publish"
+Trace.tracefn "publish is: %b" publish
+
 Target.create "Clean" (fun _ ->
     !! "src/**/bin"
     ++ "src/**/obj"
@@ -28,21 +33,23 @@ Target.create "Clean" (fun _ ->
 
 Target.create "Build" (fun _ ->
     !! "src/**/*.*proj"
-    |> Seq.iter (DotNet.build (fun opt -> 
-        { opt with
-            Configuration = DotNet.BuildConfiguration.Debug }
+    |> Seq.iter (
+        DotNet.build (fun opt ->
+            { opt with
+                Configuration =
+                    if publish
+                    then DotNet.BuildConfiguration.Release
+                    else DotNet.BuildConfiguration.Debug }
     ))
 )
-
-Target.create "BuildOnly" ignore
 
 Target.create "Pack" (fun _ ->
     !! "src/**/FsLSA*.fsproj"
     |> Seq.iter (fun p ->
         // let packageVersion = { version with (*Patch = 4711u;*) Original = None; PreRelease = PreRelease.TryParse "alpha" }.AsString
-
-        Trace.trace (sprintf "SourceDir is: %s" __SOURCE_DIRECTORY__)
-        Shell.Exec ("dotnet", sprintf "pack %s -o %s --no-build" p (Path.combine __SOURCE_DIRECTORY__ ".pack"))
+        Trace.tracefn "SourceDir is: %s" __SOURCE_DIRECTORY__
+        let config = if publish then "Release" else "Debug"
+        Shell.Exec ("dotnet", sprintf "pack %s -o %s --no-build -c %s" p (Path.combine __SOURCE_DIRECTORY__ ".pack") config)
         |> assertSuccess
     )
 )
@@ -59,7 +66,7 @@ Target.create "Publish" (fun _ ->
     |> Seq.iter (fun p ->
         Trace.tracefn "------ pushing: %s" p
         let args = sprintf "nuget push %s -k %s -s %s" p nugetApiKey Properties.nugetServer
-        printfn "exec: dotnet %s" args
+        Trace.tracef "exec: dotnet %s" args
         Shell.Exec ("dotnet", args) |> assertSuccess
     )
 
@@ -69,14 +76,12 @@ Target.create "Publish" (fun _ ->
     // setPackageVersion { packageVersion with Minor = packageVersion.Minor + 1u; Original = None }.AsString
 )
 
-"Clean"
-    ==> "Build"
-    ==> "BuildOnly"
+Target.create "final" ignore
 
 "Clean"
     ==> "Build"
-    // ==> "Test"
-    ==> "Pack"
-    ==> "Publish"
+    =?> ("Pack", publish)
+    =?> ("Publish", publish)
+    ==> "final"
 
-Target.runOrDefault "BuildOnly"
+Target.runOrDefaultWithArguments "final"
