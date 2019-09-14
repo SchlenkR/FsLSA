@@ -288,7 +288,7 @@ paket-files/
 .fake/
 
 # Ionide
-.ionide/
+# .ionide/
 
 # JetBrains Rider
 .idea/
