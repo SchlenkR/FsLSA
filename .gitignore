@@ -287,6 +287,9 @@ paket-files/
 # FAKE - F# Make
 .fake/
 
+# Ionide
+.ionide/
+
 # JetBrains Rider
 .idea/
 *.sln.iml
