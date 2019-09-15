@@ -48,8 +48,7 @@ Target.create "Pack" (fun _ ->
     |> Seq.iter (fun p ->
         // let packageVersion = { version with (*Patch = 4711u;*) Original = None; PreRelease = PreRelease.TryParse "alpha" }.AsString
         Trace.tracefn "SourceDir is: %s" __SOURCE_DIRECTORY__
-        let config = if publish then "Release" else "Debug"
-        Shell.Exec ("dotnet", sprintf "pack %s -o %s --no-build -c %s" p (Path.combine __SOURCE_DIRECTORY__ ".pack") config)
+        Shell.Exec ("dotnet", sprintf "pack %s -o %s --no-build -c Release" p (Path.combine __SOURCE_DIRECTORY__ ".pack"))
         |> assertSuccess
     )
 )
@@ -76,7 +75,7 @@ Target.create "Publish" (fun _ ->
     // setPackageVersion { packageVersion with Minor = packageVersion.Minor + 1u; Original = None }.AsString
 )
 
-Target.create "final" ignore
+Target.create "Final" ignore
 
 "Clean"
     ==> "Build"
@@ -84,4 +83,4 @@ Target.create "final" ignore
     =?> ("Publish", publish)
     ==> "final"
 
-Target.runOrDefaultWithArguments "final"
+Target.runOrDefaultWithArguments "Final"
